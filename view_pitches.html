@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Posts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("banner.jpg"); 
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #ebeceb;
+      font-size: 2.5rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: #2d5a40;
+      border-radius: 2px;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 0 auto;
+      max-width: 800px;
+    }
+
+    .post-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border: 1px solid #e0e0e0;
+    }
+
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(45, 90, 64, 0.15);
+    }
+
+    .post-user {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #2d5a40;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-right: 1rem;
+    }
+
+    .post-user-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d5a40;
+    }
+
+    .post-content {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-media {
+      margin: 1rem 0;
+      max-width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .post-timestamp {
+      font-size: 0.9rem;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .post-timestamp i {
+      color: #2d5a40;
+    }
+    .post-card h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: #2d5a40;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .post-card p {
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 1.2rem;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .post-meta i {
+      color: #2d5a40;
+    }
+
+    .post-file {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .post-file i {
+      font-size: 1.5rem;
+      color: #2d5a40;
+    }
+
+    .file-link {
+      color: #2d5a40;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .file-link:hover {
+      color: #1a472a;
+      text-decoration: underline;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .action-btn:hover {
+      color: #2d5a40;
+    }
+
+    .action-btn.liked {
+      color: #2d5a40;
+    }
+
+    .comments-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+      display: none;
+    }
+
+    .comments-section.active {
+      display: block;
+    }
+
+    .comment-input {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-input input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .comment-input button {
+      padding: 0.5rem 1rem;
+      background-color: #2d5a40;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .comment-input button:hover {
+      background-color: #1a472a;
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .comment {
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .comment-user {
+      font-weight: 600;
+      color: #2d5a40;
+      margin-bottom: 0.25rem;
+    }
+
+    .comment-text {
+      font-size: 0.9rem;
+      color: #444;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>All Posts</h1>
+    <div id="posts-container" class="posts-grid"></div>
+  </div>
+
+  <script type="module">
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    // Replace with your Firebase project config
+    const firebaseConfig = {
+            apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+            authDomain: "parkease-6flry.firebaseapp.com",
+            databaseURL: "https://parkease-6flry-default-rtdb.firebaseio.com",
+            projectId: "parkease-6flry",
+            storageBucket: "parkease-6flry.firebasestorage.app",
+            messagingSenderId: "987974602534",
+            appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+        };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const postsContainer = document.getElementById("posts-container");
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+    });
+
+    // Fetch and display posts
+    async function fetchPosts() {
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const postCard = document.createElement("div");
+        postCard.classList.add("post-card");
+        postCard.setAttribute("data-post-id", doc.id);
+        
+        // Get uploader info from the post data
+        const uploaderName = data.uploader || "Anonymous User";
+        const uploaderInitial = uploaderName.charAt(0).toUpperCase();
+        const content = data.content || data.text || data.description || "";
+        const timestamp = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : "Date not available";
+        
+        // Handle multiple files
+        let mediaHtml = "";
+        if (data.files && data.files.length > 0) {
+          data.files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+              mediaHtml += `<div class="post-media"><img src="${file.url}" alt="${file.name}" style="max-width: 100%;"></div>`;
+            } else if (file.type.startsWith('video/')) {
+              mediaHtml += `<div class="post-media"><video controls style="max-width: 100%;"><source src="${file.url}" type="${file.type}"></video></div>`;
+            } else {
+              // For other file types (documents, etc.)
+              mediaHtml += `
+                <div class="post-file">
+                  <i class="fas fa-file-alt"></i>
+                  <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
+                </div>`;
+            }
+          });
+        }
+        
+        postCard.innerHTML = `
+          <div class="post-user">
+            <div class="post-user-avatar">${uploaderInitial}</div>
+            <div class="post-user-name">${uploaderName}</div>
+          </div>
+          <div class="post-content">${content}</div>
+          ${mediaHtml}
+          <div class="post-timestamp">
+            <i class="far fa-clock"></i>
+            <span>${timestamp}</span>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn ${data.likes?.includes(currentUser?.uid) ? 'liked' : ''}" onclick="handleLike('${doc.id}')">
+              <i class="far ${data.likes?.includes(currentUser?.uid) ? 'fas' : 'far'} fa-heart"></i>
+              <span>${data.likes?.length || 0}</span>
+            </div>
+            <div class="action-btn" onclick="toggleComments('${doc.id}')">
+              <i class="far fa-comment"></i>
+              <span>${data.comments?.length || 0}</span>
+            </div>
+          </div>
+          <div class="comments-section" id="comments-${doc.id}">
+            <div class="comment-input">
+              <input type="text" placeholder="Add a comment..." id="comment-input-${doc.id}">
+              <button onclick="addComment('${doc.id}')">Post</button>
+            </div>
+            <div class="comments-list" id="comments-list-${doc.id}">
+              ${(data.comments || []).map(comment => `
+                <div class="comment">
+                  <div class="comment-user">${comment.userName}</div>
+                  <div class="comment-text">${comment.text}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        
+        postsContainer.appendChild(postCard);
+      });
+    }
+
+    fetchPosts();
+
+    // Handle likes
+    window.handleLike = async (postId) => {
+      if (!currentUser) {
+        alert('Please login to like posts');
+        return;
+      }
+
+      const postRef = doc(db, 'posts', postId);
+      const postDoc = await getDoc(postRef);
+      const postData = postDoc.data();
+      const likes = postData.likes || [];
+      const userId = currentUser.uid;
+
+      if (likes.includes(userId)) {
+        await updateDoc(postRef, {
+          likes: arrayRemove(userId)
+        });
+      } else {
+        await updateDoc(postRef, {
+          likes: arrayUnion(userId)
+        });
+      }
+
+      // Update UI
+      const likeBtn = document.querySelector(`[data-post-id="${postId}"] .action-btn:first-child`);
+      const likeCount = likeBtn.querySelector('span');
+      const likeIcon = likeBtn.querySelector('i');
+
+      if (likes.includes(userId)) {
+        likeBtn.classList.remove('liked');
+        likeIcon.classList.replace('fas', 'far');
+        likeCount.textContent = likes.length - 1;
+      } else {
+        likeBtn.classList.add('liked');
+        likeIcon.classList.replace('far', 'fas');
+        likeCount.textContent = likes.length + 1;
+      }
+    };
+
+    // Toggle comments section
+    window.toggleComments = (postId) => {
+      const commentsSection = document.getElementById(`comments-${postId}`);
+      commentsSection.classList.toggle('active');
+    };
+
+    // Add comment
+    window.addComment = async (postId) => {
+      if (!currentUser) {
+        alert('Please login to comment');
+        return;
+      }
+
+      const input = document.getElementById(`comment-input-${postId}`);
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      const postRef = doc(db, 'posts', postId);
+      const comment = {
+        userId: currentUser.uid,
+        userName: currentUser.displayName || 'Anonymous User',
+        text,
+        timestamp: new Date()
+      };
+
+      await updateDoc(postRef, {
+        comments: arrayUnion(comment)
+      });
+
+      // Update UI
+      const commentsList = document.getElementById(`comments-list-${postId}`);
+      const commentElement = document.createElement('div');
+      commentElement.classList.add('comment');
+      commentElement.innerHTML = `
+        <div class="comment-user">${comment.userName}</div>
+        <div class="comment-text">${text}</div>
+      `;
+      commentsList.appendChild(commentElement);
+
+      // Update comment count
+      const commentCount = document.querySelector(`[data-post-id="${postId}"] .action-btn:nth-child(2) span`);
+      commentCount.textContent = parseInt(commentCount.textContent) + 1;
+
+      input.value = '';
+    };
+  </script>
+</body>
+</html>
