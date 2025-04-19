@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Launchpad - Notifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        .container {
+            max-width: 768px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .filter-tabs {
+            display: flex;
+            padding: 16px;
+            border-bottom: 1px solid #e8ecf2;
+            gap: 12px;
+            background-color: #fff;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background-color: #4f46e5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        .tab:not(.active) {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .tab:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-item {
+            display: flex;
+            padding: 18px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            background-color: #fafcff;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background-color: #f0f7ff;
+        }
+
+        .notification-item .dot {
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background-color: #4f46e5;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .notification-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 16px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .notification-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .notification-text strong {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-time:before {
+            content: "•";
+            margin-right: 4px;
+        }
+
+        .notification-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            background-color: #fff;
+            color: #4f46e5;
+            border: 1px solid #4f46e5;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .action-button:hover {
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .action-button.primary {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+        }
+
+        .action-button.primary:hover {
+            background-color: #4338ca;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+        }
+
+        .notification-options {
+            margin-left: 12px;
+            align-self: flex-start;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 18px;
+            line-height: 1;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .notification-options:hover {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ecfdf5;
+            color: #047857;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        .badge.urgent {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .badge.new {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .logo-investor {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-accelerator {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+        }
+
+        .logo-event {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+        }
+
+        .logo-mentor {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .logo-resource {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-state img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #6b7280;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filter-tabs">
+            <div class="tab active">All</div>
+            <div class="tab">Investments</div>
+            <div class="tab">Mentors</div>
+            <div class="tab">Events</div>
+        </div>
+
+        <div class="notification-list">
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar logo-investor">
+                    <img src="/api/placeholder/50/50" alt="Investor profile">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text"><strong>Sarah Carter (Angel Investor)</strong> and <strong>3 other investors</strong> viewed your pitch deck.</p>
+                    <p class="notification-text">Upgrade to Pro to see detailed analytics and engagement metrics.</p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button primary">Upgrade to Pro</a>
+                        <a href="#" class="action-button">View insights</a>
+                    </div>
+                    <p class="notification-time">2h ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar logo-accelerator">
+                    <img src="/api/placeholder/50/50" alt="Y Combinator logo">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text"><strong>Y Combinator Summer Batch 2025</strong> applications are now open. <span class="badge urgent">Deadline: May 15</span></p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button primary">Apply Now</a>
+                        <a href="#" class="action-button">Learn More</a>
+                    </div>
+                    <p class="notification-time">4h ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar logo-mentor">
+                    <img src="/api/placeholder/50/50" alt="Mentor profile">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text"><strong>Alex Washington (Product Lead at Stripe)</strong> has accepted your mentorship request. <span class="badge new">New</span></p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button primary">Schedule Meeting</a>
+                        <a href="#" class="action-button">Send Message</a>
+                    </div>
+                    <p class="notification-time">8h ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar logo-event">
+                    <img src="/api/placeholder/50/50" alt="Event icon">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text"><strong>Startup Pitch Night</strong> is happening this Friday in <strong>San Francisco</strong>. 5 spots remaining for startups to pitch.</p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button primary">Apply to Pitch</a>
+                        <a href="#" class="action-button">View Event</a>
+                    </div>
+                    <p class="notification-time">1d ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar logo-resource">
+                    <img src="/api/placeholder/50/50" alt="Resource icon">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text">Your startup qualifies for <strong>$100,000 in AWS credits</strong> and <strong>5 other</strong> resources.</p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button primary">Claim Benefits</a>
+                        <a href="#" class="action-button">See All</a>
+                    </div>
+                    <p class="notification-time">2d ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+
+            <div class="notification-item">
+                <span class="dot"></span>
+                <div class="notification-avatar">
+                    <img src="/api/placeholder/50/50" alt="Analytics icon">
+                </div>
+                <div class="notification-content">
+                    <p class="notification-text">Your pitch deck has received <strong>57 views</strong> this week, a <strong>23% increase</strong> from last week.</p>
+                    <div class="notification-actions">
+                        <a href="#" class="action-button">View Analytics</a>
+                    </div>
+                    <p class="notification-time">3d ago</p>
+                </div>
+                <div class="notification-options">...</div>
+            </div>
+        </div>
+
+        <div class="empty-state">
+            <img src="/api/placeholder/120/120" alt="No notifications">
+            <h3>No notifications yet</h3>
+            <p>When you receive updates, they'll appear here</p>
+            <a href="#" class="action-button primary">Explore Opportunities</a>
+        </div>
+    </div>
+
+    <script type="module">
+            // Import Firebase modules
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
+            // Your Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+                authDomain: "parkease-6flry.firebaseapp.com",
+                databaseURL: "https://parkease-6flry-default-rtdb.firebaseio.com",
+                projectId: "parkease-6flry",
+                storageBucket: "parkease-6flry.firebasestorage.app",
+                messagingSenderId: "987974602534",
+                appId: "1:987974602534:web:df87b99ccd4d2b474ebbe7"
+            };
+    
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+    
+            // Function to create notification item
+            function createNotificationItem(notification) {
+                const notificationItem = document.createElement('div');
+                notificationItem.className = 'notification-item';
+                
+                notificationItem.innerHTML = `
+                    <span class="dot"></span>
+                    <div class="notification-avatar logo-${notification.type.toLowerCase()}">
+                        <img src="${notification.avatar}" alt="${notification.type} icon">
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-text">${notification.message}</p>
+                        ${notification.badge ? `<span class="badge ${notification.badge.type}">${notification.badge.text}</span>` : ''}
+                        ${notification.actions ? `
+                            <div class="notification-actions">
+                                ${notification.actions.map(action => `
+                                    <a href="${action.link}" class="action-button ${action.primary ? 'primary' : ''}">${action.text}</a>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <p class="notification-time">${notification.time}</p>
+                    </div>
+                    <div class="notification-options">...</div>
+                `;
+                
+                return notificationItem;
+            }
+    
+            // Listen for notifications
+            const notificationsRef = ref(database, 'notifications');
+            onValue(notificationsRef, (snapshot) => {
+                const notificationList = document.querySelector('.notification-list');
+                notificationList.innerHTML = ''; // Clear existing notifications
+                
+                const notifications = snapshot.val();
+                if (notifications) {
+                    Object.values(notifications).forEach(notification => {
+                        const notificationItem = createNotificationItem(notification);
+                        notificationList.appendChild(notificationItem);
+                    });
+                    
+                    // Update notification count
+                    const count = Object.keys(notifications).length;
+                    document.querySelector('.tab.active').textContent = `All (${count})`;
+                    
+                    // Show notification list
+                    notificationList.style.display = 'flex';
+                    document.querySelector('.empty-state').style.display = 'none';
+                } else {
+                    // Show empty state
+                    notificationList.style.display = 'none';
+                    document.querySelector('.empty-state').style.display = 'flex';
+                }
+            });
+    
+            // Rest of your existing event listeners...
+        </script>
+</body>
+</html>
