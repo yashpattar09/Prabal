@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(45, 90, 64, 0.15);
+      width: 400px;
+      backdrop-filter: blur(10px);
+    }
+
+    .category-chip.selected {
+      background: #2d5a40;
+      color: white;
+    }
+
+    button {
+      background: #2d5a40;
+      color: white;
+    }
+
+    button:hover {
+      background: #1a472a;
+    }
+    .categories-container {
+      margin: 15px 0;
+    }
+
+    .categories-title {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .category-chip {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: #f2f2f2;
+      cursor: pointer;
+      transition: 0.3s ease;
+      user-select: none;
+    }
+
+    .category-chip.selected {
+      background: #2d5a40;
+      color: white;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"], input[type="email"], select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #f2f2f2;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background:#2d5a40;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #3eb079;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Create Profile</h2>
+    <form id="profileForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="text" id="education" placeholder="Education" required>
+      <input type="text" id="bio" placeholder="Short Bio" required>
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="mentor">Mentor</option>
+        <option value="pitcher">Pitcher</option>
+      </select>
+      
+      <div class="categories-container">
+        <div class="categories-title">Categories of Interest</div>
+        <div class="category-chips" id="categoryChips">
+          <div class="category-chip" data-category="FinTech">FinTech</div>
+          <div class="category-chip" data-category="HealthTech">HealthTech</div>
+          <div class="category-chip" data-category="EdTech">EdTech</div>
+          <div class="category-chip" data-category="CleanTech">CleanTech</div>
+          <div class="category-chip" data-category="AI/ML">AI/ML</div>
+          <div class="category-chip" data-category="Blockchain">Blockchain</div>
+          <div class="category-chip" data-category="E-commerce">E-commerce</div>
+          <div class="category-chip" data-category="SaaS">SaaS</div>
+        </div>
+      </div>
+
+      <button type="submit">Save Profile</button>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+        authDomain: "parkease-6flry.firebaseapp.com",
+        projectId: "parkease-6flry",
+        storageBucket: "parkease-6flry.firebasestorage.app",
+        messagingSenderId: "987974602534",
+        appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Access stored UID, Email, and Role
+    const uid = sessionStorage.getItem('userUID');
+    const email = sessionStorage.getItem('userEmail');
+    const role = sessionStorage.getItem('userRole');
+
+    // Check authentication state
+    if (!uid || !email) {
+        alert("Please sign in first");
+        window.location.href = 'login.html';
+    }
+
+    // Pre-select role if available
+    if (role) {
+        document.getElementById('role').value = role;
+    }
+
+    // Handle Form Submission
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const education = document.getElementById('education').value;
+        const bio = document.getElementById('bio').value;
+        const selectedCategories = Array.from(document.querySelectorAll('.category-chip.selected'))
+            .map(chip => chip.dataset.category);
+
+        try {
+            await setDoc(doc(db, role === 'mentor' ? 'mentors' : 'pitchers', uid), {
+                uid,
+                name,
+                email,
+                education,
+                bio,
+                role,
+                categories: selectedCategories,
+                timestamp: new Date()
+            });
+
+            alert("Profile saved and linked to your account!");
+            window.location.href = 'profile.html';
+        } catch (error) {
+            console.error("Error saving profile: ", error);
+            alert("Something went wrong. Try again: " + error.message);
+        }
+    });
+
+    // Handle category chip selection
+    document.getElementById('categoryChips').addEventListener('click', (e) => {
+        if (e.target.classList.contains('category-chip')) {
+            e.target.classList.toggle('selected');
+        }
+    });
+  </script>
+</body>
+</html>

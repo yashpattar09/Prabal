@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Pitchers Showcase</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Update color variables */
+        :root {
+            --primary: #2d5a40;
+            --primary-dark: #1a472a;
+            --accent: #3eb079;
+            --text: #333333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            border-radius: 0;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding: 0 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(45, 90, 64, 0.4);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background-color: rgba(45, 90, 64, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .pitcher-card {
+            height: 100%;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(45, 90, 64, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 3px solid var(--primary);
+        }
+
+        .pitcher-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(45, 90, 64, 0.2);
+        }
+
+        .tag {
+            background-color: rgba(45, 90, 64, 0.1);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .tag.funding {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .pitcher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        .pitcher-card {
+            height: 100%;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        /* Add Bootstrap responsive classes */
+        @media (max-width: 768px) {
+            .filters {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 10px;
+                margin: 0 -15px 25px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .filter-btn {
+                flex: 0 0 auto;
+                margin-right: 8px;
+            }
+
+            .pitcher-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <header class="mb-4">
+        <div class="container">
+            <h1 class="display-4 mb-3">Startup Pitchers Showcase</h1>
+            <p class="lead subtitle">Connect with innovative founders and discover the next big ideas</p>
+        </div>
+    </header>
+
+    <div class="container mb-4">
+        <div class="search-container">
+            <input type="text" class="search-input form-control" placeholder="Search by category, topic, or technology..." id="searchInput">
+        </div>
+
+        <div class="filters d-flex justify-content-center flex-wrap">
+            <button class="filter-btn btn active me-2 mb-2" data-category="all">All Categories</button>
+            <button class="filter-btn" data-category="fintech">FinTech</button>
+            <button class="filter-btn" data-category="healthtech">HealthTech</button>
+            <button class="filter-btn" data-category="ai-ml">AI & ML</button>
+            <button class="filter-btn" data-category="sustainability">Sustainability</button>
+            <button class="filter-btn" data-category="saas">SaaS</button>
+            <button class="filter-btn" data-category="edtech">EdTech</button>
+            <button class="filter-btn" data-category="blockchain">Blockchain</button>
+        </div>
+
+        <div class="pitcher-grid" id="pitcherGrid">
+            <!-- Pitcher 1 -->
+            <div class="pitcher-card" data-categories="fintech ai-ml" data-name="Sarah Johnson" data-startup="FinFlow">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Sarah Johnson" class="profile-img">
+                    <div class="pitcher-name">Sarah Johnson</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">FinFlow</div>
+                    <div class="tag-container">
+                        <span class="tag">FinTech</span>
+                        <span class="tag">AI & ML</span>
+                        <span class="tag funding">Seed Funded</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 2 -->
+            <div class="pitcher-card" data-categories="healthtech saas" data-name="Michael Chen" data-startup="MediSync">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Michael Chen" class="profile-img">
+                    <div class="pitcher-name">Michael Chen</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">MediSync</div>
+                    <div class="tag-container">
+                        <span class="tag">HealthTech</span>
+                        <span class="tag">SaaS</span>
+                        <span class="tag funding">Series A</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 3 -->
+            <div class="pitcher-card" data-categories="sustainability saas ai-ml" data-name="Aisha Patel" data-startup="EcoTrack">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Aisha Patel" class="profile-img">
+                    <div class="pitcher-name">Aisha Patel</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">EcoTrack</div>
+                    <div class="tag-container">
+                        <span class="tag">Sustainability</span>
+                        <span class="tag">SaaS</span>
+                        <span class="tag">AI & ML</span>
+                        <span class="tag funding">Pre-Seed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 4 -->
+            <div class="pitcher-card" data-categories="edtech ai-ml" data-name="David Rodriguez" data-startup="Lingua AI">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="David Rodriguez" class="profile-img">
+                    <div class="pitcher-name">David Rodriguez</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">Lingua AI</div>
+                    <div class="tag-container">
+                        <span class="tag">EdTech</span>
+                        <span class="tag">AI & ML</span>
+                        <span class="tag funding">Series A</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 5 -->
+            <div class="pitcher-card" data-categories="ai-ml" data-name="Elena Kim" data-startup="SupplyChainIQ">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Elena Kim" class="profile-img">
+                    <div class="pitcher-name">Elena Kim</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">SupplyChainIQ</div>
+                    <div class="tag-container">
+                        <span class="tag">Supply Chain</span>
+                        <span class="tag">AI & ML</span>
+                        <span class="tag funding">Series B</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 6 -->
+            <div class="pitcher-card" data-categories="fintech blockchain" data-name="Jamal Williams" data-startup="SecureBlock">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Jamal Williams" class="profile-img">
+                    <div class="pitcher-name">Jamal Williams</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">SecureBlock</div>
+                    <div class="tag-container">
+                        <span class="tag">FinTech</span>
+                        <span class="tag">Blockchain</span>
+                        <span class="tag funding">Series A</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 7 -->
+            <div class="pitcher-card" data-categories="healthtech ai-ml" data-name="Maya Thompson" data-startup="BioGenAI">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Maya Thompson" class="profile-img">
+                    <div class="pitcher-name">Maya Thompson</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">BioGenAI</div>
+                    <div class="tag-container">
+                        <span class="tag">HealthTech</span>
+                        <span class="tag">AI & ML</span>
+                        <span class="tag funding">Seed Funded</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 8 -->
+            <div class="pitcher-card" data-categories="fintech" data-name="Omar Hassan" data-startup="CryptoSafe">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Omar Hassan" class="profile-img">
+                    <div class="pitcher-name">Omar Hassan</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">CryptoSafe</div>
+                    <div class="tag-container">
+                        <span class="tag">FinTech</span>
+                        <span class="tag">Security</span>
+                        <span class="tag funding">Series A</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 9 -->
+            <div class="pitcher-card" data-categories="sustainability" data-name="Leila Zhang" data-startup="GreenEnergy">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Leila Zhang" class="profile-img">
+                    <div class="pitcher-name">Leila Zhang</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">GreenEnergy</div>
+                    <div class="tag-container">
+                        <span class="tag">Sustainability</span>
+                        <span class="tag">CleanTech</span>
+                        <span class="tag funding">Series B</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 10 -->
+            <div class="pitcher-card" data-categories="saas" data-name="Jake Stevens" data-startup="CloudOps">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Jake Stevens" class="profile-img">
+                    <div class="pitcher-name">Jake Stevens</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">CloudOps</div>
+                    <div class="tag-container">
+                        <span class="tag">SaaS</span>
+                        <span class="tag">DevOps</span>
+                        <span class="tag funding">Seed Funded</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 11 -->
+            <div class="pitcher-card" data-categories="edtech saas" data-name="Sophia Garcia" data-startup="LearnPath">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Sophia Garcia" class="profile-img">
+                    <div class="pitcher-name">Sophia Garcia</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">LearnPath</div>
+                    <div class="tag-container">
+                        <span class="tag">EdTech</span>
+                        <span class="tag">SaaS</span>
+                        <span class="tag funding">Pre-Seed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitcher 12 -->
+            <div class="pitcher-card" data-categories="blockchain" data-name="Alex Morgan" data-startup="TokenTrade">
+                <div class="card-header">
+                    <img src="/api/placeholder/40/40" alt="Alex Morgan" class="profile-img">
+                    <div class="pitcher-name">Alex Morgan</div>
+                </div>
+                <div class="card-body">
+                    <div class="startup-name">TokenTrade</div>
+                    <div class="tag-container">
+                        <span class="tag">Blockchain</span>
+                        <span class="tag">FinTech</span>
+                        <span class="tag funding">Series A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                const pitcherCards = document.querySelectorAll('.pitcher-card');
+                const searchInput = document.getElementById('searchInput');
+                const pitcherGrid = document.getElementById('pitcherGrid');
+                
+                let activeCategory = 'all';
+                let searchQuery = '';
+                
+                function filterCards() {
+                    let hasVisibleCards = false;
+                    
+                    pitcherCards.forEach(card => {
+                        const cardCategories = card.getAttribute('data-categories').toLowerCase();
+                        const cardTags = Array.from(card.querySelectorAll('.tag'))
+                            .map(tag => tag.textContent.toLowerCase());
+                        
+                        const matchesCategory = activeCategory === 'all' || cardCategories.includes(activeCategory);
+                        const matchesSearch = searchQuery === '' || 
+                                       cardCategories.includes(searchQuery) || 
+                                       cardTags.some(tag => tag.includes(searchQuery));
+                        
+                        if (matchesCategory && matchesSearch) {
+                            card.style.display = 'block';
+                            hasVisibleCards = true;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    const existingNoResults = document.querySelector('.no-results');
+                    if (!hasVisibleCards) {
+                        if (!existingNoResults) {
+                            const noResults = document.createElement('div');
+                            noResults.className = 'no-results';
+                            noResults.textContent = 'No matching startups found. Try a different search.';
+                            pitcherGrid.appendChild(noResults);
+                        }
+                    } else if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                }
+                
+                // Category button click handlers
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+                        
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        activeCategory = this.getAttribute('data-category');
+                        filterCards();
+                    });
+                });
+                
+                // Search input handler
+                searchInput.addEventListener('input', function() {
+                    searchQuery = this.value.toLowerCase().trim();
+                    filterCards();
+                });
+            });
+        </script>
+    </div>
+
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const pitcherCards = document.querySelectorAll('.pitcher-card');
+            const searchInput = document.getElementById('searchInput');
+            const pitcherGrid = document.getElementById('pitcherGrid');
+            
+            let activeCategory = 'all';
+            let searchQuery = '';
+            
+            function filterCards() {
+                let hasVisibleCards = false;
+                
+                pitcherCards.forEach(card => {
+                    const cardCategories = card.getAttribute('data-categories').toLowerCase();
+                    const cardTags = Array.from(card.querySelectorAll('.tag'))
+                        .map(tag => tag.textContent.toLowerCase());
+                    
+                    const matchesCategory = activeCategory === 'all' || cardCategories.includes(activeCategory);
+                    const matchesSearch = searchQuery === '' || 
+                                       cardCategories.includes(searchQuery) || 
+                                       cardTags.some(tag => tag.includes(searchQuery));
+                    
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = 'block';
+                        hasVisibleCards = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                const existingNoResults = document.querySelector('.no-results');
+                if (!hasVisibleCards) {
+                    if (!existingNoResults) {
+                        const noResults = document.createElement('div');
+                        noResults.className = 'no-results';
+                        noResults.textContent = 'No matching startups found. Try a different search.';
+                        pitcherGrid.appendChild(noResults);
+                    }
+                } else if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+            }
+            
+            // Category button click handlers
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    activeCategory = this.getAttribute('data-category');
+                    filterCards();
+                });
+            });
+            
+            // Search input handler
+            searchInput.addEventListener('input', function() {
+                searchQuery = this.value.toLowerCase().trim();
+                filterCards();
+            });
+        });
+    </script>
+</body>
+</html>

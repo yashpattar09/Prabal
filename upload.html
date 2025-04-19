@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Interface</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F6F6F6;
+        }
+        .top-bar {
+            background-color: #2d5a40;
+            border-bottom: 1px solid #D4D4CE;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+        .modal-custom {
+            background-color: #F6F6F6;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(2, 50, 70, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 40px auto;
+            overflow: hidden;
+        }
+        .modal-header {
+            background-color: #2d5a40;
+            color: white;
+            border-bottom: 1px solid #dddfe2;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e4e6eb;
+            overflow: hidden;
+        }
+        .post-to {
+            font-size: 12px;
+            color: white;
+        }
+        .modal-body {
+            padding: 16px;
+            min-height: 200px;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+        .action-bar {
+            display: flex;
+            padding: 8px 16px;
+            border-top: 1px solid #dddfe2;
+            gap: 12px;
+        }
+        .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d5a40;
+        }
+        .action-button:hover {
+            background-color: #D4D4CE;
+        }
+        .modal-footer {
+            border-top: 1px solid #dddfe2;
+            justify-content: flex-end;
+        }
+        .btn-post {
+            background-color: #D4D4CE;
+            border: none;
+            font-weight: bold;
+            color: #023246;
+        }
+        .btn-post.active {
+            background-color: #2d5a40;
+            color: white;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .file-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: #D4D4CE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* This ensures the images are properly circular */
+        .file-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .remove-file {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 10; /* Ensure the remove button stays on top */
+        }
+        
+        #fileInput, #docInput {
+            display: none;
+        }
+        
+        .file-name {
+            font-size: 10px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 4px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 5; /* Ensure the filename stays on top of the image */
+        }
+        
+        .home-btn {
+            background-color: #2d5a40;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .home-btn:hover {
+            background-color: #244b34;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" style="background-color: #2d5a40; padding: 10px 20px;">
+        <a href="index.html" class="btn btn-outline-light">Back to Home</a>
+    </nav>
+    <div class="container">
+        <div class="modal-custom">
+            <div class="modal-header">
+                <div class="user-info">
+                    <div class="avatar">
+                        <img id="userAvatar" src="https://via.placeholder.com/48" alt="User Avatar" class="img-fluid">
+                    </div>
+                    <div>
+                        <div><strong id="userName">Loading...</strong> </div>
+                        <div class="post-to">Post to Anyone</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control border-0" placeholder="What do you want to talk about?" rows="4"></textarea>
+                <div class="file-grid" id="filePreviewGrid"></div>
+            </div>
+            <div class="action-bar">
+                <label for="fileInput" class="action-button" title="Add Images/Videos">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </label>
+                <input type="file" id="fileInput" multiple onchange="handleFileSelect(event)" accept="image/,video/">
+                
+                <label for="docInput" class="action-button" title="Upload Documents">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                </label>
+                <input type="file" id="docInput" multiple onchange="handleFileSelect(event)" accept=".doc,.docx,.pdf,.txt,.xls,.xlsx">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-post" id="postButton">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper (optional) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const docInput = document.getElementById('docInput');
+        const filePreviewGrid = document.getElementById('filePreviewGrid');
+        const postButton = document.getElementById('postButton');
+        const textarea = document.querySelector('textarea');
+        
+        // Track uploaded files
+        let uploadedFiles = [];
+        
+        // Enable post button when there's text or files
+        textarea.addEventListener('input', updatePostButtonState);
+        
+        function updatePostButtonState() {
+            if (textarea.value.trim() !== '' || uploadedFiles.length > 0) {
+                postButton.classList.add('active');
+            } else {
+                postButton.classList.remove('active');
+            }
+        }
+        
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            
+            // Validate file types
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const isImage = file.type.startsWith('image/');
+                const isVideo = file.type.startsWith('video/');
+                const isDocument = /\.(doc|docx|pdf|txt|xls|xlsx)$/i.test(file.name);
+                
+                if (!isImage && !isVideo && !isDocument) {
+                    alert(`File ${file.name} is not a supported file type`);
+                    return;
+                }
+            }
+            
+            // Increase file size limit to 2GB
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                // Check if file is too large (2GB)
+                if (file.size > 2 * 1024 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum size is 2GB`);
+                    return;
+                }
+            }
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                uploadedFiles.push(file);
+                
+                // Create preview element
+                const filePreview = document.createElement('div');
+                filePreview.className = 'file-preview';
+                
+                // Add file preview or icon based on file type
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    // Make sure the image fills the entire circle container
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.className = 'img-fluid';
+                    img.style.borderRadius = '50%'; // Ensure image is circular
+                    filePreview.appendChild(img);
+                } else {
+                    // Document icon for non-image files
+                    filePreview.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    `;
+                }
+                
+                // Add file name
+                const fileName = document.createElement('div');
+                fileName.className = 'file-name';
+                fileName.textContent = file.name;
+                filePreview.appendChild(fileName);
+                
+                // Add remove button
+                const removeButton = document.createElement('div');
+                removeButton.className = 'remove-file';
+                removeButton.innerHTML = '×';
+                removeButton.onclick = function() {
+                    // Remove from array
+                    const index = uploadedFiles.indexOf(file);
+                    if (index > -1) {
+                        uploadedFiles.splice(index, 1);
+                    }
+                    
+                    // Revoke object URL if it's an image
+                    if (file.type.startsWith('image/') && img) {
+                        URL.revokeObjectURL(img.src);
+                    }
+                    
+                    // Remove from DOM
+                    filePreview.remove();
+                    
+                    // Update post button state
+                    updatePostButtonState();
+                };
+                filePreview.appendChild(removeButton);
+                
+                // Add to grid
+                filePreviewGrid.appendChild(filePreview);
+            }
+            
+            // Reset file input
+            event.target.value = '';
+            
+            // Update post button state
+            updatePostButtonState();
+        }
+    </script>
+
+    <!-- Firebase scripts remain unchanged -->
+</body>
+</html>

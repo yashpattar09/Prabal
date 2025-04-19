@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://source.unsplash.com/random/1920x1080/?night');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: #2b5a40;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn-primary {
+            background-color: #D4D4CE;
+            border: none;
+            color: #023246;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #c4c4be;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-label {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        }
+        
+        .form-select option {
+            background-color: #023246;
+            color: white;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center py-4">
+    <div class="container">
+        <h1 class="text-center text-white mb-4">Create Account</h1>
+        <form id="signInForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="email" class="form-label">Username</label>
+                <input type="text" class="form-control" id="email" placeholder="Enter your email or phone" required>
+                <div class="invalid-feedback text-light">Please enter a valid email or phone.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                <div class="invalid-feedback text-light">Password must be at least 6 characters.</div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select" id="role" required>
+                    <option value="" disabled selected>Select your role</option>
+                    <option value="pitcher">Pitcher</option>
+                    <option value="mentor">Mentor</option>
+                </select>
+                <div class="invalid-feedback text-light">Please select a role.</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
+            
+            <div class="text-center text-light">
+                Have an account? <a href="login.html" class="text-white fw-bold text-decoration-none">Login Here</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Keep your existing scripts -->
+    <!-- Add Firebase SDK before your closing body tag -->
+    <!-- Update the Firebase script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+            authDomain: "parkease-6flry.firebaseapp.com",
+            projectId: "parkease-6flry",
+            storageBucket: "parkease-6flry.firebasestorage.app",
+            messagingSenderId: "987974602534",
+            appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('signInForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Store in session for use in profile form
+                sessionStorage.setItem('userUID', user.uid);
+                sessionStorage.setItem('userEmail', user.email);
+                sessionStorage.setItem('userRole', role);
+
+                // Store in Firestore
+                const userData = {
+                    email: email,
+                    userId: user.uid,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Store in general users collection
+                await setDoc(doc(db, "users", user.uid), {
+                    ...userData,
+                    role: role
+                });
+
+                // Store in role-specific collection
+                const roleCollection = role === 'pitcher' ? 'pitchers' : 'mentors';
+                await setDoc(doc(db, roleCollection, user.uid), userData);
+
+                window.location.href = 'profile_details.html';
+            } catch (error) {
+                alert(`Error creating account: ${error.message}`);
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
