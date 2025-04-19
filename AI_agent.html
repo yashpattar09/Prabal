@@ -1,0 +1,105 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Document</title> 
+</head> 
+<body> 
+
+    <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2025/04/18/09/20250418094523-WC1HFU5R.js"></script>
+<script> 
+// Wait for webchat to be ready
+window.addEventListener('message', function(event) {
+    if (event.data.name === 'webchatReady') {
+        initializeFileUpload();
+    }
+});
+
+function initializeFileUpload() {
+    
+    // Initialize webchat first
+    window.botpressWebChat.init();
+    
+    // Direct event listener for the message
+   
+    window.botpressWebChat.onEvent((event) => { 
+        if (event.type === 'MESSAGE.RECEIVED') { 
+            console.log('Message received:', event.value.payload.text);
+            
+            // Check for upload-related messages
+            if(event.value.payload.text.toLowerCase().includes('upload') || 
+               event.value.payload.text.toLowerCase().includes('file')) { 
+                
+                // Create and configure file input
+                const fileInput = document.createElement('input'); 
+                fileInput.type = 'file'; 
+                fileInput.accept = '*/*';
+                fileInput.style.display = 'none';
+                
+                // Handle file selection
+                fileInput.addEventListener('change', function() { 
+                    const file = this.files[0]; 
+                    if (!file) return;
+                    
+                    console.log('File selected:', file.name);
+                    const reader = new FileReader(); 
+                    
+                    reader.onload = function(e) { 
+                        const fileContent = e.target.result;
+                        console.log('File content type:', typeof fileContent);
+                        console.log('File size:', fileContent.length);
+                        
+                        // Process the file content based on file type
+                        let processedContent;
+                        if (file.type.includes('text')) {
+                            processedContent = fileContent;
+                        } else {
+                            // For binary files, convert to base64
+                            processedContent = btoa(fileContent);
+                        }
+                        
+                        window.botpressWebChat.sendPayload({ 
+                            type: 'trigger', 
+                            payload: { 
+                                title: file.name,
+                                fileType: file.type,
+                                size: file.size,
+                                content: processedContent,
+                                timestamp: new Date().toISOString()
+                            }
+                        }).then(() => {
+                            console.log('File successfully sent to bot');
+                        }).catch(error => {
+                            console.error('Error sending file:', error);
+                        });
+                    }; 
+                    
+                    reader.onerror = function(error) {
+                        console.error('Error reading file:', error);
+                    };
+                    
+                    // Use readAsArrayBuffer for better file handling
+                    if (file.type.includes('text')) {
+                        reader.readAsText(file);
+                    } else {
+                        reader.readAsArrayBuffer(file);
+                    }
+                    
+                    document.body.removeChild(fileInput);
+                });
+                
+                // Add to DOM and trigger click
+                document.body.appendChild(fileInput);
+                setTimeout(() => {
+                    fileInput.click();
+                }, 100);
+            }
+        }
+    }, ['MESSAGE.RECEIVED']); 
+   
+}
+</script> 
+</body> 
+</html>
