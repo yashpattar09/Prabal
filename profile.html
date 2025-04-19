@@ -8,10 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .profile-header {
-            background-color: #2d3748;
+            background-color: #2d5a2d;
             color: white;
             position: relative;
-            max-width: 1200px;
+            max-width: 100%;
             max-height: 150;
             margin: 0 auto;
             border-radius: 0 0 15px 15px;
@@ -80,7 +80,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: #38b2ac;
+            background: #becbcb;
             border: 2px solid white;
             color: white;
             display: flex;
@@ -112,6 +112,7 @@
             .profile-info {
                 padding: 5rem 1rem 2rem;
                 text-align: center;
+                
             }
 
             .edit-btn {
@@ -128,11 +129,29 @@
             padding: 2rem 0 2rem 220px;
         }
 
+        /* Add these styles to adjust font sizes */
+        .profile-info .display-5 {
+            font-size: 2.0rem !important;
+        }
+
+        .profile-info .fs-4 {
+            font-size: 1.1rem !important;
+        }
+
+        .profile-info .text-light-emphasis {
+            font-size: 0.9rem;
+        }
         .action-button {
             padding: 0.8rem 1.5rem;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
+            background-color: #2d5a40; /* Add this line to match your theme */
+            color: white; /* Add this to ensure text is visible */
+        }
+
+        .action-button:hover {
+            background-color: #9ea4a0; /* Add hover state */
         }
 
         .option-box {
@@ -149,7 +168,7 @@
         }
 
         .option-box h3 {
-            font-size: 1.25rem;
+            font-size: 1.00rem;
             margin-bottom: 0.5rem;
         }
 
@@ -162,7 +181,7 @@
         .option-icon {
             font-size: 2rem;
             margin-bottom: 0.75rem;
-            color: #38b2ac;
+            color: #a8b1b0;
         }
 
         .container.py-5 {
@@ -196,6 +215,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+    <!-- Replace the navbar with the new button -->
+    <button class="nav-button" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </button>
+
     <div class="profile-header">
         
         <div class="container position-relative">
@@ -225,7 +250,7 @@
     <div class="container py-5">
         <div class="row g-4 mb-5">
             <div class="col-md-4">
-                <div class="option-box" onclick="window.location.href='yourPitches.html'">
+                <div class="option-box" onclick="window.location.href='myposts.html'">
                     <div class="option-icon">📊</div>
                     <h3 class="h4 mb-3">Your Pitches</h3>
                     <p class="text-muted mb-0">View and manage all your pitch submissions</p>
@@ -371,3 +396,28 @@
     </script>
 </body>
 </html>
+
+<style>
+    .nav-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: auto;
+        padding: 10px 20px;
+        background: #D4D4CE; /* Change this color to match your desired background */
+        color: #2d5a40; /* Change text color to maintain contrast */
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 1000;
+        transition: 0.3s ease;
+    }
+
+    .nav-button:hover {
+        background: #c4c4be; /* Change hover state color */
+    }
+</style>
