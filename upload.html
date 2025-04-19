@@ -6,12 +6,14 @@
     <title>File Upload Interface</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             background-color: #F6F6F6;
         }
         .top-bar {
-            background-color: #2d5a40;
+            background-color: #2d5a40;  /* Updated from #287094 */
             border-bottom: 1px solid #D4D4CE;
             padding: 8px 16px;
             display: flex;
@@ -29,7 +31,7 @@
             overflow: hidden;
         }
         .modal-header {
-            background-color: #2d5a40;
+            background-color: #2d5a40;  /* Updated from #287094 */
             color: white;
             border-bottom: 1px solid #dddfe2;
         }
@@ -47,8 +49,9 @@
         }
         .post-to {
             font-size: 12px;
-            color: white;
+            color: #dee2e6;
         }
+        
         .modal-body {
             padding: 16px;
             min-height: 200px;
@@ -72,7 +75,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #2d5a40;
+            color: #2d5a40;  /* Updated from #023246 */
         }
         .action-button:hover {
             background-color: #D4D4CE;
@@ -88,7 +91,7 @@
             color: #023246;
         }
         .btn-post.active {
-            background-color: #2d5a40;
+            background-color: #2d5a40;  /* Updated from #287094 */
             color: white;
         }
         .file-grid {
@@ -101,22 +104,13 @@
             width: 100%;
             aspect-ratio: 1;
             background-color: #D4D4CE;
-            border-radius: 50%;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
         }
-        
-        /* This ensures the images are properly circular */
-        .file-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        
         .remove-file {
             position: absolute;
             top: 4px;
@@ -131,13 +125,10 @@
             justify-content: center;
             cursor: pointer;
             font-size: 14px;
-            z-index: 10; /* Ensure the remove button stays on top */
         }
-        
         #fileInput, #docInput {
             display: none;
         }
-        
         .file-name {
             font-size: 10px;
             text-align: center;
@@ -151,39 +142,65 @@
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 5; /* Ensure the filename stays on top of the image */
         }
-        
         .home-btn {
-            background-color: #2d5a40;
-            color: white;
+    background-color: #34e67e;
+    color: rgb(244, 239, 239);
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.home-btn:hover {
+    background-color: #244b34;
+
+}
+.nav-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: auto;
             padding: 10px 20px;
-            text-decoration: none;
+            background: #2d5a40;
+            color: white;
+            border: none;
             border-radius: 8px;
-            transition: background-color 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            transition: 0.3s ease;
         }
 
-        .home-btn:hover {
-            background-color: #244b34;
+        .nav-button:hover {
+            background: #1a472a;
         }
+        
     </style>
 </head>
 <body>
-    <nav class="navbar" style="background-color: #2d5a40; padding: 10px 20px;">
-        <a href="index.html" class="btn btn-outline-light">Back to Home</a>
-    </nav>
+    <!-- Replace the navbar with the new button -->
+    <button class="nav-button" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </button>
+
     <div class="container">
         <div class="modal-custom">
             <div class="modal-header">
                 <div class="user-info">
                     <div class="avatar">
-                        <img id="userAvatar" src="https://via.placeholder.com/48" alt="User Avatar" class="img-fluid">
+                        <img id="profileImage" src="https://via.placeholder.com/40" alt="User Avatar" width="40" height="40" class="img-fluid">
                     </div>
                     <div>
-                        <div><strong id="userName">Loading...</strong> </div>
+                        <div><strong id="profileName">Loading...</strong></div>
                         <div class="post-to">Post to Anyone</div>
                     </div>
                 </div>
+                
             </div>
             <div class="modal-body">
                 <textarea class="form-control border-0" placeholder="What do you want to talk about?" rows="4"></textarea>
@@ -197,7 +214,7 @@
                         <polyline points="21 15 16 10 5 21"></polyline>
                     </svg>
                 </label>
-                <input type="file" id="fileInput" multiple onchange="handleFileSelect(event)" accept="image/,video/">
+                <input type="file" id="fileInput" multiple onchange="handleFileSelect(event)" accept="image/*,video/*">
                 
                 <label for="docInput" class="action-button" title="Upload Documents">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -242,19 +259,6 @@
         function handleFileSelect(event) {
             const files = event.target.files;
             
-            // Validate file types
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const isImage = file.type.startsWith('image/');
-                const isVideo = file.type.startsWith('video/');
-                const isDocument = /\.(doc|docx|pdf|txt|xls|xlsx)$/i.test(file.name);
-                
-                if (!isImage && !isVideo && !isDocument) {
-                    alert(`File ${file.name} is not a supported file type`);
-                    return;
-                }
-            }
-            
             // Increase file size limit to 2GB
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -277,12 +281,10 @@
                 if (file.type.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
-                    // Make sure the image fills the entire circle container
                     img.style.width = '100%';
                     img.style.height = '100%';
                     img.style.objectFit = 'cover';
                     img.className = 'img-fluid';
-                    img.style.borderRadius = '50%'; // Ensure image is circular
                     filePreview.appendChild(img);
                 } else {
                     // Document icon for non-image files
@@ -314,11 +316,6 @@
                         uploadedFiles.splice(index, 1);
                     }
                     
-                    // Revoke object URL if it's an image
-                    if (file.type.startsWith('image/') && img) {
-                        URL.revokeObjectURL(img.src);
-                    }
-                    
                     // Remove from DOM
                     filePreview.remove();
                     
@@ -339,6 +336,196 @@
         }
     </script>
 
-    <!-- Firebase scripts remain unchanged -->
+    <!-- Update the Firebase script section -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+            authDomain: "parkease-6flry.firebaseapp.com",
+            databaseURL: "https://parkease-6flry-default-rtdb.firebaseio.com",
+            projectId: "parkease-6flry",
+            storageBucket: "parkease-6flry.firebasestorage.app",
+            messagingSenderId: "987974602534",
+            appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+    
+        // Add this function to fetch user profile data
+        async function fetchUserProfile(userId) {
+            try {
+                // Try to fetch from mentors collection first
+                let userDoc = await getDoc(doc(db, "mentors", userId));
+                
+                // If not found in mentors, try pitchers collection
+                if (!userDoc.exists()) {
+                    userDoc = await getDoc(doc(db, "pitchers", userId));
+                }
+    
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    
+                    // Update profile name
+                    const profileNameElement = document.getElementById('profileName');
+                    profileNameElement.textContent = userData.name || 'Anonymous User';
+                    
+                    // Update profile image
+                    const profileImageElement = document.getElementById('profileImage');
+                    if (userData.profileImage) {
+                        profileImageElement.src = userData.profileImage;
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        }
+    
+        // Update the auth state change listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Fetch user profile when authenticated
+                fetchUserProfile(user.uid);
+            } else {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Get the postButton reference 
+        const postButtonFirebase = document.getElementById('postButton');
+        
+        // Add the Firebase upload handler
+        postButtonFirebase.addEventListener('click', async function() {
+            if (uploadedFiles.length === 0 && textarea.value.trim() === '') {
+                return;
+            }
+
+            try {
+                // Show loading state
+                postButtonFirebase.disabled = true;
+                postButtonFirebase.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Uploading...';
+
+                // Upload each file and get their URLs
+                const uploadPromises = uploadedFiles.map(async (file) => {
+                    // Create a unique filename using timestamp
+                    const timestamp = Date.now();
+                    const uniqueFileName = `${timestamp}_${file.name}`;
+                    const storageRef = ref(storage, 'uploads/' + uniqueFileName);
+                    
+                    // Create upload task with metadata
+                    const metadata = {
+                        contentType: file.type,
+                        customMetadata: {
+                            'originalName': file.name
+                        }
+                    };
+                    
+                    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+                    return new Promise((resolve, reject) => {
+                        uploadTask.on('state_changed',
+                            (snapshot) => {
+                                // Update upload progress
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                postButtonFirebase.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Uploading ${Math.round(progress)}%`;
+                            },
+                            (error) => reject(error),
+                            async () => {
+                                try {
+                                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                    resolve({
+                                        url: downloadURL,
+                                        type: file.type,
+                                        name: file.name,
+                                        path: 'uploads/' + uniqueFileName
+                                    });
+                                } catch (error) {
+                                    reject(error);
+                                }
+                            }
+                        );
+                    });
+                });
+
+                const uploadedUrls = await Promise.all(uploadPromises);
+
+                // Create post in Firestore
+                await addDoc(collection(db, "posts"), {
+                    text: textarea.value,
+                    files: uploadedUrls,
+                    timestamp: serverTimestamp(),
+                    uploader: auth.currentUser?.displayName || 'Anonymous User',
+                    type: "post"
+                });
+
+                // Clear the form
+                textarea.value = '';
+                filePreviewGrid.innerHTML = '';
+                uploadedFiles = [];
+                updatePostButtonState();
+
+                // Reset button and show success message
+                postButtonFirebase.disabled = false;
+                postButtonFirebase.textContent = 'Post';
+                
+                // Create Bootstrap toast notification
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '1070';
+
+                toastContainer.innerHTML = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Post created successfully!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(toastContainer);
+                
+                // Initialize and show toast
+                const toastElement = toastContainer.querySelector('.toast');
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 3000
+                });
+                toast.show();
+                
+                // Redirect after toast is hidden
+                toastElement.addEventListener('hidden.bs.toast', () => {
+                    window.location.href = 'homepage.html';
+                });
+            } catch (error) {
+                console.error("Error creating post:", error);
+                
+                // Create Bootstrap error alert
+                const alertContainer = document.createElement('div');
+                alertContainer.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                alertContainer.setAttribute('role', 'alert');
+                alertContainer.innerHTML = `
+                    Error creating post: ${error.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                
+                // Insert before the post button
+                const modalFooter = document.querySelector('.modal-footer');
+                modalFooter.parentNode.insertBefore(alertContainer, modalFooter);
+                
+                // Reset button state on error
+                postButtonFirebase.disabled = false;
+                postButtonFirebase.textContent = 'Post';
+            }
+        });
+    </script>
 </body>
 </html>
