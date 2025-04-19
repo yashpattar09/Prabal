@@ -102,11 +102,41 @@
     button:hover {
       background: #3eb079;
     }
-  </style>
+    .nav-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: auto;
+        padding: 10px 20px;
+        background: #2d5a40;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 1000;
+    }
+
+    .nav-button:hover {
+        background: #1a472a;
+    }
+</style>
+</body>
+<head>
+    <!-- Add this line in the head section if not already present -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="form-container">
-    <h2>Create Profile</h2>
+    <button class="nav-button" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </button>
+
+    <div class="form-container">
+        <h2>Create Profile</h2>
     <form id="profileForm">
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="text" id="education" placeholder="Education" required>
