@@ -592,6 +592,12 @@
                 justify-content: center;
             }
         }
+        .gcse-search{
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 60%;
+        }
     </style>
 </head>
 <body>
@@ -626,12 +632,10 @@
         <!-- Main Content -->
         <main class="main-content">
             <header>
-                <div class="search-container">
-                    <div class="search-bar">
-                        <input type="text" placeholder="Search">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
+                <script async src="https://cse.google.com/cse.js?cx=b6d37314aebe34f07">
+                </script>
+                <div class="gcse-search"></div>
+                
             </header>
 
             <div class="page-header">
@@ -764,7 +768,6 @@
          
         </main>
 
-       <!-- Right Sidebar -->
 <!-- Right Sidebar -->
 <div class="right-sidebar">
     <div class="action-buttons">
@@ -776,7 +779,7 @@
         <i class="fas fa-bell"></i>
         <span>Notifications</span>
       </button>
-      <button class="action-btn" >
+      <button class="action-btn" onclick="window.location.href='matchmaker.html'">
         <i class="fas fa-handshake"></i>
         <span>Partnerships</span>
       </button>
@@ -788,13 +791,18 @@
         <i class="fas fa-phone"></i>
         <span>Support</span>
       </button>
-      <button class="action-btn">
-        <i class="fas fa-file-upload" onclick="window.location.href='upload.html'"></i>
-        <span>&nbsp;Upload</span>
+      <button class="action-btn" onclick="window.location.href='upload.html'">
+        <i class="fas fa-file-upload"></i>
+        <span>Upload</span>
+      </button>
+      <!-- New Login Button -->
+      <button class="action-btn" onclick="window.location.href='login.html'">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Login</span>
       </button>
     </div>
-  </div>
-  
+</div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
