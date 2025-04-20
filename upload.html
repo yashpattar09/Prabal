@@ -358,23 +358,22 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
     
-        // Add this function to fetch user profile data
+        let userName = 'Anonymous User'; // Default name
+    
+        // Fetch user profile data
         async function fetchUserProfile(userId) {
             try {
-                // Try to fetch from mentors collection first
                 let userDoc = await getDoc(doc(db, "mentors", userId));
-                
-                // If not found in mentors, try pitchers collection
                 if (!userDoc.exists()) {
                     userDoc = await getDoc(doc(db, "pitchers", userId));
                 }
     
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    
+                    userName = userData.name || 'Anonymous User'; // Store the user's name
                     // Update profile name
                     const profileNameElement = document.getElementById('profileName');
-                    profileNameElement.textContent = userData.name || 'Anonymous User';
+                    profileNameElement.textContent = userName;
                     
                     // Update profile image
                     const profileImageElement = document.getElementById('profileImage');
@@ -397,7 +396,7 @@
                 window.location.href = 'login.html';
             }
         });
-
+    
         // Get the postButton reference 
         const postButtonFirebase = document.getElementById('postButton');
         
@@ -456,12 +455,12 @@
 
                 const uploadedUrls = await Promise.all(uploadPromises);
 
-                // Create post in Firestore
+                // Create post in Firestore using the fetched user name
                 await addDoc(collection(db, "posts"), {
                     text: textarea.value,
                     files: uploadedUrls,
                     timestamp: serverTimestamp(),
-                    uploader: auth.currentUser?.displayName || 'Anonymous User',
+                    uploader: userName, // Use the fetched user name
                     type: "post"
                 });
 
@@ -503,7 +502,7 @@
                 
                 // Redirect after toast is hidden
                 toastElement.addEventListener('hidden.bs.toast', () => {
-                    window.location.href = 'homepage.html';
+                    window.location.href = 'index.html';
                 });
             } catch (error) {
                 console.error("Error creating post:", error);
