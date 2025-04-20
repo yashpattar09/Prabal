@@ -1,135 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <!-- Add Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Add Font Awesome for the back arrow icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-image: url('https://source.unsplash.com/random/1920x1080/?night');
-            background-size: cover;
-            background-position: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            background-color: #2d5a40;
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 450px;
-            margin: 2rem auto;
-            padding: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-control {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.8rem 1rem;
-        }
-        
-        .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: white;
-            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .btn-primary {
-            background-color: #D4D4CE;
-            border: none;
-            color: #023246;
-            font-weight: 600;
-            padding: 0.8rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: #c4c4be;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .form-label {
-            color: white;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .nav-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: auto;
-            padding: 10px 20px;
-            background: #2d5a40;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 1000;
-            transition: 0.3s ease;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In</title>
 
-        .nav-button:hover {
-            background: #1a472a;
-        }
-    </style>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    body {
+      background-image: url('https://source.unsplash.com/random/1920x1080/?night');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #2d5a40;
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      margin: 2rem auto;
+      padding: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-control {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.8rem 1rem;
+    }
+
+    .form-control:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+      box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-primary {
+      background-color: #D4D4CE;
+      border: none;
+      color: #023246;
+      font-weight: 600;
+      padding: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #c4c4be;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-label {
+      color: white;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: #2d5a40;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      transition: 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #1a472a;
+    }
+  </style>
 </head>
-<body class="d-flex align-items-center py-4">
-    <button class="nav-button" onclick="window.location.href='index.html'">
-        <i class="fas fa-arrow-left"></i>
-        Back to Home
-    </button>
-    
-    <div class="container">
-        <h1 class="text-center text-white mb-4">Login Here</h1>
-        <form id="signInForm" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="email" class="form-label">Username</label>
-                <input type="text" class="form-control" id="email" placeholder="Enter your email or phone" required>
-                <div class="invalid-feedback text-light">Please enter a valid email or phone.</div>
-            </div>
-            
-            <div class="mb-4">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-                <div class="invalid-feedback text-light">Password must be at least 6 characters.</div>
-            </div>
-            
-            <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
-            
-            <div class="text-center text-light">
-                Don't have an account? 
-                <a href="register.html" class="text-white fw-bold text-decoration-none" onclick="redirectToRegister(event)">
-                    Create Account
-                </a>
-            </div>
-        </form>
-    </div>
 
-    <!-- Add Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        function redirectToRegister(event) {
-            event.preventDefault();
-            window.location.href = 'register.html';
-        }
-    </script>
+<body class="d-flex align-items-center py-4">
+  <button class="nav-button" onclick="window.location.href='index.html'">
+    <i class="fas fa-arrow-left"></i> Back to Home
+  </button>
+
+  <div class="container">
+    <h1 class="text-center text-white mb-4">Login Here</h1>
+    <form id="signInForm" novalidate>
+      <div class="mb-3">
+        <label for="email" class="form-label">Username</label>
+        <input type="text" class="form-control" id="email" placeholder="Enter your email" required />
+        <div class="invalid-feedback text-light">Please enter a valid email.</div>
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Enter your password" required />
+        <div class="invalid-feedback text-light">Password must be at least 6 characters.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3" id="signInButton">Login</button>
+
+      <div class="text-center text-light">
+        Don't have an account?
+        <a href="register.html" class="text-white fw-bold text-decoration-none">Create Account</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Firebase Login Script -->
+  <script type="module" src="login.js"></script>
+
+  <!-- Bootstrap Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
