@@ -1,464 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startup Launchpad - Notifications</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Post Notifications</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            background-color: #f7f9fc;
-            color: #333;
-        }
+    html, body {
+      height: 100%; /* Set the height to 100% */
+      margin: 0;
+      padding: 0;
+    }
 
-        .container {
-            max-width: 768px;
-            margin: 20px auto;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      background-image: url('banner.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
 
-        .filter-tabs {
-            display: flex;
-            padding: 16px;
-            border-bottom: 1px solid #e8ecf2;
-            gap: 12px;
-            background-color: #fff;
-        }
+    /* Add an overlay to increase transparency */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(240, 242, 245, 0.7); /* Adjust transparency here */
+      z-index: -1;
+    }
 
-        .tab {
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 0 20px;
+    }
 
-        .tab.active {
-            background-color: #4f46e5;
-            color: white;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
-        }
+    h2 {
+      text-align: center;
+      color: #204431;
+      margin: 0;
+    }
 
-        .tab:not(.active) {
-            background-color: #f1f5f9;
-            color: #64748b;
-        }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .tab:not(.active):hover {
-            background-color: #e2e8f0;
-        }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #204431;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
 
-        .notification-list {
-            display: flex;
-            flex-direction: column;
-        }
+    .notification-badge {
+      position: relative;
+      display: inline-block;
+    }
 
-        .notification-item {
-            display: flex;
-            padding: 18px;
-            border-bottom: 1px solid #f0f0f0;
-            position: relative;
-            background-color: #fafcff;
-            transition: background-color 0.2s ease;
-        }
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #ff4d4f;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
 
-        .notification-item:hover {
-            background-color: #f0f7ff;
-        }
+    .notification-container {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-        .notification-item .dot {
-            position: absolute;
-            left: 6px;
-            top: 50%;
-            width: 8px;
-            height: 8px;
-            background-color: #4f46e5;
-            border-radius: 50%;
-            transform: translateY(-50%);
-        }
+    .post-notification {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease;
+      border-left: 4px solid #204431;
+    }
 
-        .notification-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            margin-right: 16px;
-            overflow: hidden;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .new-notification {
+      border-left: 4px solid #0077cc;
+      animation: pulse 2s infinite;
+    }
 
-        .notification-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    @keyframes pulse {
+      0% { box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1); }
+      50% { box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3); }
+      100% { box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1); }
+    }
 
-        .notification-content {
-            flex-grow: 1;
-        }
+    .post-notification:hover {
+      transform: translateY(-2px);
+    }
 
-        .notification-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 8px;
-            color: #374151;
-        }
+    .post-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #204431;
+      display: flex;
+      justify-content: space-between;
+    }
 
-        .notification-text strong {
-            font-weight: 600;
-            color: #111827;
-        }
+    .timestamp {
+      font-size: 12px;
+      color: #666;
+      font-weight: normal;
+    }
 
-        .notification-time {
-            font-size: 12px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-        }
+    .activities {
+      border-top: 1px solid #eee;
+      margin-top: 15px;
+      padding-top: 15px;
+    }
 
-        .notification-time:before {
-            content: "•";
-            margin-right: 4px;
-        }
+    .activity-item {
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
 
-        .notification-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 8px;
-        }
+    .activity-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #e1f0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-        .action-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-            background-color: #fff;
-            color: #4f46e5;
-            border: 1px solid #4f46e5;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
+    .like-icon {
+      color: #0077cc;
+    }
 
-        .action-button:hover {
-            background-color: rgba(79, 70, 229, 0.05);
-        }
+    .comment-icon {
+      color: #204431;
+    }
 
-        .action-button.primary {
-            background-color: #4f46e5;
-            color: white;
-            border: none;
-        }
+    .activity-content {
+      flex-grow: 1;
+    }
 
-        .action-button.primary:hover {
-            background-color: #4338ca;
-            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
-        }
+    .activity-user {
+      font-weight: bold;
+      color: #204431;
+    }
 
-        .notification-options {
-            margin-left: 12px;
-            align-self: flex-start;
-            cursor: pointer;
-            color: #9ca3af;
-            font-size: 18px;
-            line-height: 1;
-            padding: 6px;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
+    .activity-time {
+      font-size: 12px;
+      color: #666;
+      margin-left: 8px;
+    }
 
-        .notification-options:hover {
-            background-color: #f3f4f6;
-            color: #4b5563;
-        }
+    .comment-text {
+      background-color: #f1f3f5;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 6px;
+      font-size: 14px;
+    }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            background-color: #ecfdf5;
-            color: #047857;
-            font-size: 12px;
-            font-weight: 500;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-left: 8px;
-        }
+    .no-posts {
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 12px;
+      color: #666;
+    }
 
-        .badge.urgent {
-            background-color: #fef2f2;
-            color: #b91c1c;
-        }
+    .auth-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
 
-        .badge.new {
-            background-color: #eff6ff;
-            color: #1d4ed8;
-        }
+    .auth-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
 
-        .logo-investor {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            font-weight: bold;
-        }
+    .auth-button {
+      background-color: #204431;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
 
-        .logo-accelerator {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-            color: white;
-        }
+    .auth-button:hover {
+      background-color: #153221;
+    }
 
-        .logo-event {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-            color: white;
-        }
+    .filter-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
 
-        .logo-mentor {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
+    .filter-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      background-color: #f1f3f5;
+      transition: all 0.2s;
+    }
 
-        .logo-resource {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
+    .filter-tab.active {
+      background-color: #204431;
+      color: white;
+    }
 
-        .empty-state {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .empty-state img {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 16px;
-            opacity: 0.7;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #1f2937;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-            color: #6b7280;
-            max-width: 300px;
-            margin-bottom: 20px;
-        }
-    </style>
+    @media (max-width: 600px) {
+      .post-notification {
+        padding: 15px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+    .header h2 {
+      color: white; /* Change the text color to white */
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="filter-tabs">
-            <div class="tab active">All</div>
-            <div class="tab">Investments</div>
-            <div class="tab">Mentors</div>
-            <div class="tab">Events</div>
+
+  <div id="authContainer" class="auth-container">
+    <h2>Sign In</h2>
+    <input type="email" id="emailInput" class="auth-input" placeholder="Email">
+    <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+    <button id="signInBtn" class="auth-button">Sign In</button>
+    <p>Don't have an account? <a href="#" id="signUpToggle">Sign Up</a></p>
+  </div>
+
+  <div id="mainContainer" style="display: none;">
+    <div class="header">
+      <h2>Your Post Notifications</h2>
+      <div class="user-info">
+        <div class="notification-badge">
+          <div id="userAvatar" class="user-avatar">U</div>
+          <div id="notificationBadge" class="badge" style="display: none;">0</div>
         </div>
-
-        <div class="notification-list">
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar logo-investor">
-                    <img src="/api/placeholder/50/50" alt="Investor profile">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text"><strong>Sarah Carter (Angel Investor)</strong> and <strong>3 other investors</strong> viewed your pitch deck.</p>
-                    <p class="notification-text">Upgrade to Pro to see detailed analytics and engagement metrics.</p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button primary">Upgrade to Pro</a>
-                        <a href="#" class="action-button">View insights</a>
-                    </div>
-                    <p class="notification-time">2h ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar logo-accelerator">
-                    <img src="/api/placeholder/50/50" alt="Y Combinator logo">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text"><strong>Y Combinator Summer Batch 2025</strong> applications are now open. <span class="badge urgent">Deadline: May 15</span></p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button primary">Apply Now</a>
-                        <a href="#" class="action-button">Learn More</a>
-                    </div>
-                    <p class="notification-time">4h ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar logo-mentor">
-                    <img src="/api/placeholder/50/50" alt="Mentor profile">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text"><strong>Alex Washington (Product Lead at Stripe)</strong> has accepted your mentorship request. <span class="badge new">New</span></p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button primary">Schedule Meeting</a>
-                        <a href="#" class="action-button">Send Message</a>
-                    </div>
-                    <p class="notification-time">8h ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar logo-event">
-                    <img src="/api/placeholder/50/50" alt="Event icon">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text"><strong>Startup Pitch Night</strong> is happening this Friday in <strong>San Francisco</strong>. 5 spots remaining for startups to pitch.</p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button primary">Apply to Pitch</a>
-                        <a href="#" class="action-button">View Event</a>
-                    </div>
-                    <p class="notification-time">1d ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar logo-resource">
-                    <img src="/api/placeholder/50/50" alt="Resource icon">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text">Your startup qualifies for <strong>$100,000 in AWS credits</strong> and <strong>5 other</strong> resources.</p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button primary">Claim Benefits</a>
-                        <a href="#" class="action-button">See All</a>
-                    </div>
-                    <p class="notification-time">2d ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-
-            <div class="notification-item">
-                <span class="dot"></span>
-                <div class="notification-avatar">
-                    <img src="/api/placeholder/50/50" alt="Analytics icon">
-                </div>
-                <div class="notification-content">
-                    <p class="notification-text">Your pitch deck has received <strong>57 views</strong> this week, a <strong>23% increase</strong> from last week.</p>
-                    <div class="notification-actions">
-                        <a href="#" class="action-button">View Analytics</a>
-                    </div>
-                    <p class="notification-time">3d ago</p>
-                </div>
-                <div class="notification-options">...</div>
-            </div>
-        </div>
-
-        <div class="empty-state">
-            <img src="/api/placeholder/120/120" alt="No notifications">
-            <h3>No notifications yet</h3>
-            <p>When you receive updates, they'll appear here</p>
-            <a href="#" class="action-button primary">Explore Opportunities</a>
-        </div>
+        <span id="userName">User</span>
+        <button id="signOutBtn" class="auth-button">Sign Out</button>
+      </div>
     </div>
 
-    <script type="module">
-            // Import Firebase modules
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-            import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-            // Your Firebase configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
-                authDomain: "parkease-6flry.firebaseapp.com",
-                databaseURL: "https://parkease-6flry-default-rtdb.firebaseio.com",
-                projectId: "parkease-6flry",
-                storageBucket: "parkease-6flry.firebasestorage.app",
-                messagingSenderId: "987974602534",
-                appId: "1:987974602534:web:df87b99ccd4d2b474ebbe7"
-            };
-    
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const database = getDatabase(app);
-    
-            // Function to create notification item
-            function createNotificationItem(notification) {
-                const notificationItem = document.createElement('div');
-                notificationItem.className = 'notification-item';
+    <div class="filter-tabs">
+      <div class="filter-tab active" data-filter="all">All</div>
+      <div class="filter-tab" data-filter="likes">Likes</div>
+      <div class="filter-tab" data-filter="comments">Comments</div>
+      <div class="filter-tab" data-filter="new">New</div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer">
+      <div class="no-posts">
+        Loading your notifications...
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+            apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+            authDomain: "parkease-6flry.firebaseapp.com",
+            projectId: "parkease-6flry",
+            storageBucket: "parkease-6flry.firebasestorage.app",
+            messagingSenderId: "987974602534",
+            appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+        };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // DOM elements
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpToggle = document.getElementById('signUpToggle');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const authContainer = document.getElementById('authContainer');
+    const mainContainer = document.getElementById('mainContainer');
+    const notificationContainer = document.getElementById('notificationContainer');
+
+    let isSignUp = false;
+
+    // Sign in or sign up
+    signInBtn.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            alert('Please enter both email and password.');
+            return;
+        }
+
+        if (isSignUp) {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => alert('Sign up successful!'))
+                .catch(error => alert('Sign up error: ' + error.message));
+        } else {
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => alert('Sign in successful!'))
+                .catch(error => alert('Sign in error: ' + error.message));
+        }
+    });
+
+    // Toggle between sign in and sign up
+    signUpToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        isSignUp = !isSignUp;
+        signInBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+        signUpToggle.textContent = isSignUp ? 'Sign In' : 'Sign Up';
+    });
+
+    // Sign out
+    signOutBtn.addEventListener('click', () => {
+        signOut(auth).then(() => alert('Signed out successfully.'));
+    });
+
+    // Auth state change
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            authContainer.style.display = 'none';
+            mainContainer.style.display = 'block';
+            fetchUserActivities(user.uid);
+        } else {
+            authContainer.style.display = 'block';
+            mainContainer.style.display = 'none';
+            notificationContainer.innerHTML = '<div class="no-posts">Please sign in to view notifications.</div>';
+        }
+    });
+
+    // Fetch user activities from Firestore
+    function fetchUserActivities(userId) {
+        const activitiesQuery = query(collection(db, 'posts'), where('userId', '==', userId));
+
+        onSnapshot(activitiesQuery, async (querySnapshot) => {
+            const activities = [];
+            for (const doc of querySnapshot.docs) {
+                const activityData = doc.data();
                 
-                notificationItem.innerHTML = `
-                    <span class="dot"></span>
-                    <div class="notification-avatar logo-${notification.type.toLowerCase()}">
-                        <img src="${notification.avatar}" alt="${notification.type} icon">
-                    </div>
-                    <div class="notification-content">
-                        <p class="notification-text">${notification.message}</p>
-                        ${notification.badge ? `<span class="badge ${notification.badge.type}">${notification.badge.text}</span>` : ''}
-                        ${notification.actions ? `
-                            <div class="notification-actions">
-                                ${notification.actions.map(action => `
-                                    <a href="${action.link}" class="action-button ${action.primary ? 'primary' : ''}">${action.text}</a>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                        <p class="notification-time">${notification.time}</p>
-                    </div>
-                    <div class="notification-options">...</div>
-                `;
+                // Get user information if needed
+                const userDoc = await getDoc(doc(db, 'users', activityData.userId));
+                const userData = userDoc.exists() ? userDoc.data() : {};
                 
-                return notificationItem;
+                activities.push({
+                    ...activityData,
+                    text: activityData.text || '',
+                    timestamp: activityData.timestamp || Date.now(),
+                    userName: activityData.userName || 'Anonymous User',
+                    postTitle: activityData.postTitle || 'Untitled Post',
+                    userEmail: userData.email || 'Email Not Available'
+                });
             }
-    
-            // Listen for notifications
-            const notificationsRef = ref(database, 'notifications');
-            onValue(notificationsRef, (snapshot) => {
-                const notificationList = document.querySelector('.notification-list');
-                notificationList.innerHTML = ''; // Clear existing notifications
-                
-                const notifications = snapshot.val();
-                if (notifications) {
-                    Object.values(notifications).forEach(notification => {
-                        const notificationItem = createNotificationItem(notification);
-                        notificationList.appendChild(notificationItem);
-                    });
-                    
-                    // Update notification count
-                    const count = Object.keys(notifications).length;
-                    document.querySelector('.tab.active').textContent = `All (${count})`;
-                    
-                    // Show notification list
-                    notificationList.style.display = 'flex';
-                    document.querySelector('.empty-state').style.display = 'none';
-                } else {
-                    // Show empty state
-                    notificationList.style.display = 'none';
-                    document.querySelector('.empty-state').style.display = 'flex';
-                }
-            });
-    
-            // Rest of your existing event listeners...
-        </script>
+            renderActivities(activities);
+        });
+    }
+
+    // Render activities
+    function renderActivities(activities) {
+        notificationContainer.innerHTML = '';
+
+        if (activities.length === 0) {
+            notificationContainer.innerHTML = '<div class="no-posts">No activities on your posts yet.</div>';
+            return;
+        }
+
+        activities.forEach(activity => {
+            const activityDiv = document.createElement('div');
+            activityDiv.classList.add('post-notification');
+
+            const activityContent = `
+                <div class="post-title">
+                    ${activity.postTitle}
+                    <span class="timestamp">${new Date(activity.timestamp).toLocaleString()}</span>
+                </div>
+                <div class="activities">
+                    <div class="activity-item">
+                        <div class="activity-icon ${activity.type === 'like' ? 'like-icon' : 'comment-icon'}">
+                            ${activity.type === 'like' ? '👍' : '💬'}
+                        </div>
+                        <div class="activity-content">
+                            <div>
+                                <span class="activity-user">${activity.userName}</span>
+                                <span class="activity-time">${getTimeAgo(activity.timestamp)}</span>
+                            </div>
+                            <div>${activity.type === 'like' ? 'liked your post' : 'commented on your post'}</div>
+                            ${activity.type === 'comment' ? `<div class="comment-text">${activity.text}</div>` : ''}
+                            <div class="activity-email">Email: ${activity.userEmail}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            activityDiv.innerHTML = activityContent;
+            notificationContainer.appendChild(activityDiv);
+        });
+    }
+
+    // Helper function to calculate time ago
+    function getTimeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return `${seconds} seconds ago`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+        const days = Math.floor(hours / 24);
+        if (days < 30) return `${days} day${days !== 1 ? 's' : ''} ago`;
+        const months = Math.floor(days / 30);
+        if (months < 12) return `${months} month${months !== 1 ? 's' : ''} ago`;
+        const years = Math.floor(months / 12);
+        return `${years} year${years !== 1 ? 's' : ''} ago`;
+    }
+  </script>
 </body>
 </html>
