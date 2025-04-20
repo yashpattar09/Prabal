@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Matchmaking Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      position: relative; /* Add position relative for pseudo-element */
+      background: url('banner.jpg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.5); /* Add semi-transparent overlay */
+      z-index: 0;
+    }
+
+    .container {
+      position: relative; /* Ensure container is above overlay */
+      background: #f9f9f9;
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      z-index: 1; /* Ensure container is above overlay */
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2d5a40;
+    }
+
+    .user-info {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #e0e0e0; /* Updated to lighter shade */
+      border-radius: 10px;
+    }
+
+    .user-role {
+      display: inline-block;
+      padding: 5px 12px;
+      background: #2d5a40; /* Updated to match theme */
+      color: white;
+      border-radius: 15px;
+      margin-top: 5px;
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .chip {
+      padding: 10px 16px;
+      background-color: #e0e0e0; /* Updated to lighter shade */
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.3s ease;
+    }
+
+    .chip.selected {
+      background-color: #2d5a40; /* Updated to match theme */
+      color: white;
+    }
+
+    .action-btn {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 12px 24px;
+      background: #2d5a40; /* Updated to match theme */
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .action-btn:hover {
+      background-color: #4CAF50; /* Updated to lighter shade */
+    }
+
+    .match-card {
+      background: #f9f9f9; /* Updated to lighter shade */
+      padding: 20px;
+      border-radius: 16px;
+      margin: 15px 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .match-name {
+      font-weight: 600;
+      font-size: 18px;
+      color: #2d5a40; /* Updated to match theme */
+    }
+
+    .match-role {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: #2d5a40; /* Updated to match theme */
+      color: white;
+    }
+
+    .match-percentage {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 5px 10px;
+      background: #4CAF50; /* Updated to lighter shade */
+      color: white;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .contact-btn {
+      display: block;
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: #2d5a40; /* Updated to match theme */
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .contact-btn:hover {
+      background-color: #4CAF50; /* Updated to lighter shade */
+    }
+
+    .no-matches {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .login-message {
+      text-align: center;
+      padding: 20px;
+      background: #e0e0e0; /* Updated to lighter shade */
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .login-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 20px;
+      background: #2d5a40; /* Updated to match theme */
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <style>
+    .nav-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: #2d5a40; /* Match theme color */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      transition: 0.3s ease;
+    }
+  
+    .nav-button:hover {
+      background: #4CAF50; /* Lighter shade on hover */
+    }
+  </style>
+  <!-- Add Back to Home button -->
+  <button class="nav-button" onclick="window.location.href='index.html'">
+    <i class="fas fa-arrow-left"></i>
+    Back to Home
+  </button>
+
+  <div class="container">
+    <h2>Find Your Best Match</h2>
+  
+  <div id="userPanel">
+    <div class="loading">Loading user information...</div>
+  </div>
+
+  <div class="chip-container" id="categoryChips">
+    <div class="chip" data-category="AI/ML">AI/ML</div>
+    <div class="chip" data-category="FinTech">FinTech</div>
+    <div class="chip" data-category="HealthTech">HealthTech</div>
+    <div class="chip" data-category="EdTech">EdTech</div>
+    <div class="chip" data-category="CleanTech">CleanTech</div>
+    <div class="chip" data-category="Blockchain">Blockchain</div>
+    <div class="chip" data-category="E-commerce">E-commerce</div>
+    <div class="chip" data-category="SaaS">SaaS</div>
+  </div>
+
+  <button class="action-btn" id="findMatchesBtn">Find Matches</button>
+
+  <div id="matchesContainer">
+    <div id="matchesList"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMBtmktzEY04ZkkYsF8Co6Q4iBoL-ZDJk",
+    authDomain: "parkease-6flry.firebaseapp.com",
+    databaseURL: "https://parkease-6flry-default-rtdb.firebaseio.com",
+    projectId: "parkease-6flry",
+    storageBucket: "parkease-6flry.appspot.com",
+    messagingSenderId: "987974602534",
+    appId: "1:987974602534:web:1f93e17f9e580a124ebbe7"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Global variables
+  let currentUser = null;
+  let currentUserProfile = null;
+  let currentUserDocId = null;
+  
+  // DOM elements
+  const userPanel = document.getElementById('userPanel');
+  const findMatchesBtn = document.getElementById('findMatchesBtn');
+  const matchesList = document.getElementById('matchesList');
+  const categoryChips = document.querySelectorAll('.chip');
+  
+  // Initialize chips event listeners
+  categoryChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+    });
+  });
+
+  // Add event listener to the find matches button
+  findMatchesBtn.addEventListener('click', findMatches);
+
+  // Check authentication state
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      await loadUserProfile();
+      renderUserPanel();
+    } else {
+      renderLoginMessage();
+    }
+  });
+
+  // Load user profile from Firestore
+  async function loadUserProfile() {
+    try {
+      // Check both collections for the user profile
+      const collections = ['mentors', 'pitchers'];
+      
+      for (const collectionName of collections) {
+        const q = query(collection(db, collectionName), where("email", "==", currentUser.email));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          currentUserProfile = doc.data();
+          currentUserDocId = doc.id;
+          
+          // Pre-select user's categories
+          if (currentUserProfile.categories && Array.isArray(currentUserProfile.categories)) {
+            categoryChips.forEach(chip => {
+              if (currentUserProfile.categories.includes(chip.dataset.category)) {
+                chip.classList.add('selected');
+              }
+            });
+          }
+          
+          return;
+        }
+      }
+      
+      // If we get here, no profile was found
+      console.log("No user profile found");
+    } catch (error) {
+      console.error("Error loading user profile:", error);
+    }
+  }
+
+  // Render user panel
+  function renderUserPanel() {
+    if (!currentUserProfile) {
+      userPanel.innerHTML = `
+        <div class="user-info">
+          <div>Welcome, ${currentUser.email}</div>
+          <div>No profile found. Please complete your profile.</div>
+          <button class="action-btn" onclick="window.location.href='profile.html'">Create Profile</button>
+        </div>
+      `;
+      return;
+    }
+
+    userPanel.innerHTML = `
+      <div class="user-info">
+        <div>Welcome, ${currentUserProfile.name || currentUser.email}</div>
+        <div class="user-role">${currentUserProfile.role}</div>
+        <div style="margin-top: 10px">
+          <button class="contact-btn" style="background: #6c757d" onclick="logoutUser()">Logout</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Render login message
+  function renderLoginMessage() {
+    userPanel.innerHTML = `
+      <div class="login-message">
+        <div>Please log in to find your matches</div>
+        <a href="login.html" class="login-btn">Login</a>
+      </div>
+    `;
+    findMatchesBtn.disabled = true;
+  }
+
+  // Find matches based on selected categories
+  async function findMatches() {
+    if (!currentUser || !currentUserProfile) {
+      alert("Please log in and complete your profile first.");
+      return;
+    }
+
+    const selectedCategories = Array.from(document.querySelectorAll('.chip.selected'))
+      .map(chip => chip.dataset.category);
+    
+    if (selectedCategories.length === 0) {
+      alert("Please select at least one category of interest.");
+      return;
+    }
+
+    // Show loading indicator
+    matchesList.innerHTML = '<div class="loading">Finding your best matches...</div>';
+
+    try {
+      // Determine which collection to search based on user role
+      const targetRole = currentUserProfile.role.toLowerCase() === 'mentor' ? 'pitchers' : 'mentors';
+      const targetCollection = collection(db, targetRole);
+      const snapshot = await getDocs(targetCollection);
+      
+      // Process and sort matches
+      const matches = [];
+      
+      snapshot.forEach(doc => {
+        if (doc.id === currentUserDocId) return; // Skip current user
+        
+        const data = doc.data();
+        if (!data.categories || !Array.isArray(data.categories)) return;
+        
+        // Find matching categories
+        const matchingCategories = data.categories.filter(category => 
+          selectedCategories.includes(category)
+        );
+        
+        if (matchingCategories.length > 0) {
+          // Calculate match percentage
+          const matchPercentage = Math.round(
+            (matchingCategories.length / Math.max(selectedCategories.length, data.categories.length)) * 100
+          );
+          
+          matches.push({
+            id: doc.id,
+            data: data,
+            matchingCategories: matchingCategories,
+            matchPercentage: matchPercentage
+          });
+        }
+      });
+      
+      // Sort matches by percentage (highest first)
+      matches.sort((a, b) => b.matchPercentage - a.matchPercentage);
+      
+      // Render matches
+      renderMatches(matches, targetRole);
+      
+    } catch (error) {
+      console.error("Error finding matches:", error);
+      matchesList.innerHTML = '<div class="no-matches">An error occurred while finding matches.</div>';
+    }
+  }
+
+  // Render matches list
+  function renderMatches(matches, targetRole) {
+    if (matches.length === 0) {
+      matchesList.innerHTML = `
+        <div class="no-matches">
+          No matches found. Try selecting different categories.
+        </div>
+      `;
+      return;
+    }
+
+    const roleTitle = targetRole === 'mentors' ? 'Mentor' : 'Pitcher';
+    
+    matchesList.innerHTML = `
+      <div class="matches-header">Found ${matches.length} ${matches.length === 1 ? roleTitle : roleTitle + 's'}</div>
+    `;
+
+    matches.forEach(match => {
+      const matchCard = document.createElement('div');
+      matchCard.className = 'match-card';
+      
+      // Get match color based on percentage
+      const matchColor = getMatchColor(match.matchPercentage);
+      
+      matchCard.innerHTML = `
+        <div class="match-header">
+          <div class="match-name">
+            ${match.data.name}
+            <span class="match-percentage" style="background-color: ${matchColor}">${match.matchPercentage}% Match</span>
+          </div>
+          <div class="match-role">${match.data.role}</div>
+        </div>
+        <div class="match-bio">${match.data.bio || 'No bio available'}</div>
+        <div class="match-tags">
+          ${match.matchingCategories.map(category => 
+            `<div class="tag">${category}</div>`
+          ).join('')}
+        </div>
+        <button class="contact-btn" onclick="contactUser('${match.id}')">Contact</button>
+      `;
+      
+      matchesList.appendChild(matchCard);
+    });
+  }
+
+  // Get color based on match percentage
+  function getMatchColor(percentage) {
+    if (percentage >= 80) return '#4CAF50'; // Green
+    if (percentage >= 60) return '#8BC34A'; // Light green
+    if (percentage >= 40) return '#FFC107'; // Yellow
+    if (percentage >= 20) return '#FF9800'; // Orange
+    return '#F44336'; // Red
+  }
+
+  // Global contact function
+  window.contactUser = async function(userId) {
+    try {
+      // Fetch the mentor's document from Firestore
+      const mentorDocRef = doc(db, "mentors", userId);
+      const mentorDoc = await getDoc(mentorDocRef);
+      
+      if (mentorDoc.exists()) {
+        const mentorData = mentorDoc.data();
+        const mentorEmail = mentorData.email || 'Email not available';
+        alert(`Mentor's Email: ${mentorEmail}`);
+      } else {
+        alert('Mentor not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching mentor email:', error);
+      alert('An error occurred while fetching the mentor email.');
+    }
+  };
+
+  // Global logout function
+  window.logoutUser = function() {
+    signOut(auth).then(() => {
+      window.location.reload();
+    }).catch((error) => {
+      console.error("Error signing out:", error);
+    });
+  };
+</script>
+</body>
+</html>
