@@ -48,7 +48,7 @@
         .btn-primary {
             background-color: #D4D4CE;
             border: none;
-            color: #023246;
+            color: #020202;
             font-weight: 600;
             padding: 0.8rem;
             transition: all 0.3s ease;
@@ -71,7 +71,7 @@
         }
         
         .form-select option {
-            background-color: #023246;
+            background-color: #767777;
             color: white;
         }
         
@@ -194,6 +194,9 @@
                 const roleCollection = role === 'pitcher' ? 'pitchers' : 'mentors';
                 await setDoc(doc(db, roleCollection, user.uid), userData);
 
+                // Alert message for successful account creation
+                alert('Account created');
+                
                 window.location.href = 'profile_details.html';
             } catch (error) {
                 alert(`Error creating account: ${error.message}`);
