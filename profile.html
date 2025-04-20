@@ -22,6 +22,10 @@
             margin: 0 auto;
             padding: 2rem 1rem;
         }
+        .text-muted {
+           --bs-text-opacity: 1;
+            color: #becbcb;
+        }
 
         @media (max-width: 1200px) {
             .profile-header {
@@ -155,33 +159,40 @@
         }
 
         .option-box {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.8); /* Add this line for transparency */
             border-radius: 12px;
-            padding: 1.2rem;
+            padding: 1.2rem;   
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(249, 248, 248, 0.08);
             transition: all 0.3s ease;
             min-height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background-image: url('dashboard.jpg');
+            background-size: cover;
+            background-position: center;
         }
 
         .option-box h3 {
             font-size: 1.00rem;
             margin-bottom: 0.5rem;
+            top: 0;
+            bottom: 10px; 
         }
 
         .option-box p {
             font-size: 0.9rem;
             line-height: 1.4;
             margin-bottom: 0;
+            top: 0;
+            bottom: 10px; 
         }
 
         .option-icon {
             font-size: 2rem;
             margin-bottom: 0.75rem;
-            color: #a8b1b0;
+            color: #f7fffd;
         }
 
         .container.py-5 {
@@ -210,6 +221,11 @@
             .upload-btn {
                 width: 100%;
                 font-size: 0.9rem;
+            }
+
+            /* Ensure bio text is always white */
+            #aboutText {
+                color: white !important;
             }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -248,37 +264,24 @@
 
     <div class="container py-5">
         <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="option-box" onclick="window.location.href='myposts.html'">
-                    <div class="option-icon">📊</div>
-                    <h3 class="h4 mb-3">Your Pitches</h3>
-                    <p class="text-muted mb-0">View and manage all your pitch submissions</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="option-box" onclick="window.location.href='pitchAI.html'">
-                    <div class="option-icon">🤖</div>
-                    <h3 class="h4 mb-3">Pitch AI</h3>
-                    <p class="text-muted mb-0">Get AI-powered insights for your pitch</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
+            <!-- Adjust the column width to make them equal -->
+            <div class="col-md-6">
                 <div class="option-box" onclick="window.location.href='analytics.html'">
-                    <div class="option-icon">📈</div>
-                    <h3 class="h4 mb-3">Your Analytics</h3>
-                    <p class="text-muted mb-0">Track your performance metrics</p>
+                    
+                    <h2 class="h4 mb-3" style="color: rgb(251, 247, 247);">Your Analytics</h2> <!-- Added inline style for color -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm" style="background: linear-gradient(135deg, #2d5a2d, #4CAF50);">
+                    <div class="card-body p-4">
+                        <h2 class="card-title h3 mb-4" style="color: white;">About</h2>
+                        <p id="aboutText" class="card-text text-muted"></p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h2 class="card-title h3 mb-4">About</h2>
-                <p id="aboutText" class="card-text text-muted"></p>
-            </div>
-        </div>
+        
     </div>
 
     <!-- Add Bootstrap JS -->
@@ -423,4 +426,4 @@
     #profileTitle {
         color: white !important;
     }
-</style>
+</style>text-muted
